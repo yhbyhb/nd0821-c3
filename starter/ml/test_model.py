@@ -110,7 +110,7 @@ def test_compute_model_metrics(train_test_data, preds):
     try:
         assert 0.74 < precision < 0.78
         assert 0.61 < recall < 0.64  
-        assert 0.67 < fbeta  < 0.69
+        assert 0.67 < fbeta  < 0.70
 
         logging.info("Testing compute_model_metrics() : succeeded")
     except AssertionError as err:
