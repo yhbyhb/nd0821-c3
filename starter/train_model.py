@@ -42,8 +42,16 @@ X_test, y_test, _, _ = process_data(
 # Train and save a model.
 model = train_model(X_train, y_train)
 
-with open(os.path.join(cur_path, "../model/model.pkl"), 'wb') as f:
+model_path = os.path.join(cur_path, "../model");
+
+with open(os.path.join(model_path, "model.pkl"), 'wb') as f:
     pickle.dump(model, f)
+
+with open(os.path.join(model_path, "model_encoder.pkl"), 'wb') as f:
+    pickle.dump(encoder, f)
+
+with open(os.path.join(model_path, "model_lb.pkl"), 'wb') as f:
+    pickle.dump(lb, f)        
 
 # Inference and compute metrics
 preds = inference(model, X_test)
