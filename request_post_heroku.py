@@ -1,3 +1,8 @@
+'''
+# request_post_heroku.py
+a script for POST request on Heroku APP
+'''
+
 import requests
 
 input_data = {
@@ -14,11 +19,13 @@ input_data = {
     "capital-gain" : 0,
     "capital-loss" : 0,
     "hours-per-week" : 80,
-    "native-country" : "United-States",                
+    "native-country" : "United-States",
 }
 
 
-response = requests.post('https://yhbyhb-nd0821-c3.herokuapp.com/inference/', json=input_data)
+response = requests.post('https://yhbyhb-nd0821-c3.herokuapp.com/inference/', 
+                          json=input_data,
+                          timeout=10)
 
 print("response status code: ", response.status_code)
 print("response: ", response.json())

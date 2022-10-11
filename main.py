@@ -1,8 +1,14 @@
+'''
+# main.py
+main app using FastAPI
+
+'''
 # main.py
 import os
-import pandas as pd
 import pathlib
 import pickle
+
+import pandas as pd
 
 from fastapi import FastAPI
 from fastapi.encoders import jsonable_encoder
@@ -21,7 +27,10 @@ if "DYNO" in os.environ and os.path.isdir(".dvc"):
 app = FastAPI()
 
 class DataModel(BaseModel):
-    age: int 
+    '''
+    DataModel for POST input data
+    '''
+    age: int
     workclass: str
     fnlgt: int
     education: str
@@ -37,6 +46,9 @@ class DataModel(BaseModel):
     native_country: str = Field(alias="native-country")
 
     class Config:
+        '''
+        Config for an example DataModel
+        '''
         allow_population_by_field_name = True
         schema_extra = {
             "example": {
@@ -59,13 +71,17 @@ class DataModel(BaseModel):
 
 @app.get("/")
 async def get_welcome():
+    '''
+    GET returns a welcome message
+    '''
     return {"welcome": "Welcome!"}
 
 
 @app.post("/inference/")
 async def predict(input_data: DataModel):
-    """
-    """
+    '''
+    POST returns predicted result. ">50k" or "<=50K"
+    '''
     # convert data to DataFrame
     data = jsonable_encoder(input_data)
     df = pd.DataFrame(data=data.values(), index=data.keys()).T
@@ -82,17 +98,17 @@ async def predict(input_data: DataModel):
 
     # load model
     cur_path = pathlib.Path(__file__).parent.resolve()
-    model_path = os.path.join(cur_path, "model");
+    model_path = os.path.join(cur_path, "model")
 
     model_dir = 'model'
     model_path = os.path.join(os.path.abspath(os.curdir), model_dir)
 
-    with open(os.path.join(model_path, "model.pkl"), 'rb') as f:
-        model = pickle.load(f)
-    with open(os.path.join(model_path, "model_encoder.pkl"), 'rb') as f:
-        encoder = pickle.load(f)
-    with open(os.path.join(model_path, "model_lb.pkl"), 'rb') as f:
-        lb = pickle.load(f)
+    with open(os.path.join(model_path, "model.pkl"), 'rb') as file:
+        model = pickle.load(file)
+    with open(os.path.join(model_path, "model_encoder.pkl"), 'rb') as file:
+        encoder = pickle.load(file)
+    with open(os.path.join(model_path, "model_lb.pkl"), 'rb') as file:
+        lb = pickle.load(file)
 
     X, _, _, _ = process_data(
         df,
@@ -105,4 +121,3 @@ async def predict(input_data: DataModel):
     prediction = {"prediction": lb.inverse_transform(preds)[0]}
 
     return prediction
-

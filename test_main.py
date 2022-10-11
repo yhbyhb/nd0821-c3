@@ -1,19 +1,29 @@
+'''
 # test_main.py
+Unit test for main.py
 
-import json
-from main import app
+'''
+
 from fastapi.testclient import TestClient
+
+from main import app
 
 
 client = TestClient(app)
 
 
 def test_get_welcome():
-    r = client.get("/")
-    assert r.status_code == 200
-    assert r.json() == {"welcome": "Welcome!"}
+    '''
+    test GET
+    '''
+    response = client.get("/")
+    assert response.status_code == 200
+    assert response.json() == {"welcome": "Welcome!"}
 
 def test_inference_above50k():
+    '''
+    test POST and response is ">50K"
+    '''
     input_data = {
         "age" : 37,
         "workclass" : "Private",
@@ -28,15 +38,20 @@ def test_inference_above50k():
         "capital-gain" : 0,
         "capital-loss" : 0,
         "hours-per-week" : 80,
-        "native-country" : "United-States",                
+        "native-country" : "United-States",
     }
 
     response_post = client.post("/inference/", json=input_data)
     print(response_post.json)
-    assert response_post.status_code == 200, "Response code is not successful. {}".format(response_post.json())
-    assert response_post.json() == {"prediction":'>50K'}, "Wrong prediction. expectation '>50K'"
+    assert response_post.status_code == 200, \
+        f"Response code is not successful. {response_post.json()}"
+    assert response_post.json() == {"prediction":'>50K'}, \
+        "Wrong prediction. expectation '>50K'"
 
 def test_inference_under50k():
+    '''
+    test POST and response is "<=50K"
+    '''
     input_data = {
         "age": 53,
         "workclass": "Private",
@@ -51,12 +66,12 @@ def test_inference_under50k():
         "capital-gain": 0,
         "capital-loss": 0,
         "hours-per-week": 40,
-        "native-country": "United-States",              
+        "native-country": "United-States",
     }
 
     response_post = client.post("/inference/", json=input_data)
     print(response_post.json)
-    assert response_post.status_code == 200, "Response code is not successful. {}".format(response_post.json())
-    assert response_post.json() == {"prediction":'<=50K'}, "Wrong prediction. expectation '<=50K'"
-
-        
+    assert response_post.status_code == 200, \
+        f"Response code is not successful. {response_post.json()}"
+    assert response_post.json() == {"prediction":'<=50K'}, \
+        "Wrong prediction. expectation '<=50K'"

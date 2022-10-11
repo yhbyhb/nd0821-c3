@@ -66,6 +66,12 @@ def inference(model, X):
 
 def compute_sliced_performace(df, model, encoder, lb, cat_features):
     """
+    compute slicing data model performance
+
+    Returns
+    -------
+    sliced_perf : List of dictionary includes performance metric and feature that using data slice
+
     """
     sliced_perf = []
     for feature in cat_features:

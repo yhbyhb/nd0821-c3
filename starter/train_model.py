@@ -1,12 +1,19 @@
-# Script to train machine learning model.
+'''
+# train_model.py
+Script to train machine learning model.
+This also includes a sample script for sliced model performance.
+
+'''
+
 import csv
-import numpy as np
 import os
-import pandas as pd
 import pathlib
 import pickle
-import yaml
+
+import numpy as np
+import pandas as pd
 from sklearn.model_selection import train_test_split
+
 from ml.data import process_data
 from ml.model import train_model, compute_model_metrics, inference, compute_sliced_performace
 
@@ -43,7 +50,7 @@ X_test, y_test, _, _ = process_data(
 # Train and save a model.
 model = train_model(X_train, y_train)
 
-model_path = os.path.join(cur_path, "../model");
+model_path = os.path.join(cur_path, "../model")
 
 with open(os.path.join(model_path, "model.pkl"), 'wb') as f:
     pickle.dump(model, f)
@@ -52,7 +59,7 @@ with open(os.path.join(model_path, "model_encoder.pkl"), 'wb') as f:
     pickle.dump(encoder, f)
 
 with open(os.path.join(model_path, "model_lb.pkl"), 'wb') as f:
-    pickle.dump(lb, f)        
+    pickle.dump(lb, f)
 
 # Inference and compute metrics
 preds = inference(model, X_test)
