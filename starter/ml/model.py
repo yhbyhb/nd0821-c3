@@ -1,6 +1,7 @@
 from sklearn.metrics import fbeta_score, precision_score, recall_score
 from sklearn.ensemble import RandomForestClassifier
 
+from .data import process_data
 
 # Optional: implement hyperparameter tuning.
 def train_model(X_train, y_train):
@@ -61,3 +62,29 @@ def inference(model, X):
         Predictions from the model.
     """
     return model.predict(X)
+
+
+def compute_sliced_performace(df, model, encoder, lb, cat_features):
+    """
+    """
+    sliced_perf = []
+    for feature in cat_features:
+        for feature_value in df[feature].unique():
+            # slicing dataframe with respect to feature and feature_value
+            sliced_df = df[df[feature] == feature_value]
+            X_slice, y_slice, _, _ = process_data(
+                sliced_df,
+                categorical_features=cat_features,
+                label="salary", training=False,
+                encoder=encoder, lb=lb)
+            predictions_slice = inference(model, X_slice)
+            precision, recall, f_beta = compute_model_metrics(y_slice, predictions_slice)
+            slicing_perf_dict = {
+                'feature' : feature,
+                'feature_value' : feature_value,
+                'precision' : precision,
+                'recall' : recall,
+                'f_beta' : f_beta,
+            }
+            sliced_perf.append(slicing_perf_dict)
+    return sliced_perf

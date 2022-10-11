@@ -8,7 +8,7 @@ import pickle
 import yaml
 from sklearn.model_selection import train_test_split
 from ml.data import process_data
-from ml.model import train_model, compute_model_metrics, inference
+from ml.model import train_model, compute_model_metrics, inference, compute_sliced_performace
 
 
 cur_path = pathlib.Path(__file__).parent.resolve()
@@ -61,33 +61,11 @@ precision, recall, fbeta = compute_model_metrics(y_test, preds)
 print(f'precisio : {precision}, recall : {recall}, fbeta : {fbeta}')
 
 # categorical data slicing
-slicing_perf= []
-df = data
-for feature in cat_features:
-    for feature_value in df[feature].unique():
-        # slicing dataframe with respect to feature and feature_value
-        sliced_df = df[df[feature] == feature_value]
-        X_slice, y_slice, _, _ = process_data(
-            sliced_df,
-            categorical_features=cat_features,
-            label="salary", training=False,
-            encoder=encoder, lb=lb)
-        predictions_slice = inference(model, X_slice)
-        precision_sl, recall_sl, f_beta_sl = compute_model_metrics(y_slice, predictions_slice)
-        slicing_perf_dict = {
-            'feature' : feature,
-            'feature_value' : feature_value,
-            'precision' : precision_sl,
-            'recall' : recall_sl,
-            'f_beta' : f_beta_sl,
-        }
-        slicing_perf.append(slicing_perf_dict)
-        # from pprint import pprint 
-        # pprint(perf_dict)
-      
-keys = slicing_perf[0].keys()
+sliced_perf = compute_sliced_performace(data, model, encoder, lb, cat_features)
 
-with open(os.path.join(cur_path, 'sliced_data_performance.csv'), 'w', newline='') as output_file:
+keys = sliced_perf[0].keys()
+
+with open(os.path.join(cur_path, 'sliced_output.txt'), 'w', newline='') as output_file:
     dict_writer = csv.DictWriter(output_file, keys)
     dict_writer.writeheader()
-    dict_writer.writerows(slicing_perf)
+    dict_writer.writerows(sliced_perf)
