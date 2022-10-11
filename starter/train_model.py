@@ -3,13 +3,14 @@ import csv
 import numpy as np
 import os
 import pandas as pd
+import pathlib
 import pickle
 import yaml
 from sklearn.model_selection import train_test_split
 from ml.data import process_data
 from ml.model import train_model, compute_model_metrics, inference
 
-import pathlib
+
 cur_path = pathlib.Path(__file__).parent.resolve()
 
 data = pd.read_csv(os.path.join(cur_path, "../data/census_cleaned.csv"))
