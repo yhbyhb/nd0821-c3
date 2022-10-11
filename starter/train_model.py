@@ -87,7 +87,7 @@ for feature in cat_features:
       
 keys = slicing_perf[0].keys()
 
-with open(os.path.join(cur_path, '../logs/sliceing.csv'), 'w', newline='') as output_file:
+with open(os.path.join(cur_path, 'sliced_data_performance.csv'), 'w', newline='') as output_file:
     dict_writer = csv.DictWriter(output_file, keys)
     dict_writer.writeheader()
     dict_writer.writerows(slicing_perf)
